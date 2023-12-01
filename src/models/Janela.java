@@ -41,7 +41,8 @@ public class Janela extends JFrame {
             esperaInicioRetangulo = false,
             esperaFimRetangulo = false,
             esperaInicioQuadrado = false,
-            esperaFimQuadrado = false;
+            esperaFimQuadrado = false,
+            esperaTexto = false;
 
     protected Color corAtual = Color.BLACK;
     protected Ponto p1;
@@ -60,7 +61,7 @@ public class Janela extends JFrame {
         btnRetangulo.addActionListener(new DesenhoDeRetangulo());
         btnCirculo.addActionListener(new DesenhoDeCirculo());
         btnElipse.addActionListener(new DesenhoDeElipse());
-//        btnTexto.addActionListener(new AdicionarTexto());
+        btnTexto.addActionListener(new AdicionarTexto());
         btnCores.addActionListener(new EscolherCor());
         btnAbrir.addActionListener(new AbrirArquivo());
         btnSalvar.addActionListener(new SalvarArquivo());
@@ -99,8 +100,9 @@ public class Janela extends JFrame {
 
         this.addWindowListener(new FechamentoDeJanela());
 
-        this.setSize(1200, 800);
+        this.setSize(1440, 900);
         this.setVisible(true);
+        this.setResizable(false);
     }
 
     private void carregarBotoesImg() {
@@ -313,6 +315,10 @@ public class Janela extends JFrame {
                     figuras.add(new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 4, corAtual));
                 figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
                 statusBar1.setText("Mensagem:");
+            } else if (esperaTexto) {
+                String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+                esperaTexto = false;
+                statusBar1.setText("Mensagem:");
             }
         }
 
@@ -424,6 +430,15 @@ public class Janela extends JFrame {
         }
     }
 
+    protected class AdicionarTexto implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaTexto = true;
+
+            statusBar1.setText("Mensagem: clique o local do texto desejado");
+        }
+    }
+
     protected class EscolherCor implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -470,9 +485,9 @@ public class Janela extends JFrame {
                             case 'e':
                                 figuras.add(new Elipse(line));
                                 break;
-//                            case 't':
-//                                figuras.add(new Texto(line));
-//                                break;
+                            case 't':
+                                figuras.add(new Texto(line));
+                                break;
                         }
                         line = bufferedReader.readLine();
                     }
