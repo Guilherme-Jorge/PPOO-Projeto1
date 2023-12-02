@@ -9,11 +9,11 @@ public class Ponto extends Figura {
     protected int x, y;
 
     public Ponto(int x, int y) {
-        this(x, y, Color.BLACK);
+        this(x, y, Color.BLACK, Color.WHITE);
     }
 
-    public Ponto(int x, int y, Color cor) {
-        super(cor);
+    public Ponto(int x, int y, Color cor, Color fill) {
+        super(cor, fill);
 
         this.x = x;
         this.y = y;
@@ -28,6 +28,10 @@ public class Ponto extends Figura {
         this.y = Integer.parseInt(quebrador.nextToken());
 
         this.cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
     }
@@ -58,6 +62,12 @@ public class Ponto extends Figura {
                 this.x +
                 ":" +
                 this.y +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

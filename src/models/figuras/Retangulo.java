@@ -8,11 +8,11 @@ public class Retangulo extends Figura {
     protected int altura, comprimento;
 
     public Retangulo(int x, int y, int comprimento, int altura) {
-        this(x, y, comprimento, altura, Color.BLACK);
+        this(x, y, comprimento, altura, Color.BLACK, Color.WHITE);
     }
 
-    public Retangulo(int x, int y, int comprimento, int altura, Color cor) {
-        super(cor);
+    public Retangulo(int x, int y, int comprimento, int altura, Color cor, Color fill) {
+        super(cor, fill);
 
         this.p = new Ponto(x, y);
 
@@ -35,15 +35,22 @@ public class Retangulo extends Figura {
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.p = new Ponto(x, y, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.p = new Ponto(x, y, cor, fill);
         this.comprimento = comprimento;
         this.altura = altura;
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
         g.drawRect(this.p.getX(), this.p.getY(), comprimento, altura);
+        g.setColor(this.fill);
+        g.fillRect(this.p.getX(), this.p.getY(), comprimento, altura);
     }
 
     public String toString() {
@@ -55,6 +62,12 @@ public class Retangulo extends Figura {
                 this.comprimento +
                 ":" +
                 this.altura +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

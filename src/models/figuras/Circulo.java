@@ -8,11 +8,11 @@ public class Circulo extends Figura {
     protected int raio;
 
     public Circulo(int x, int y, int r) {
-        this(x, y, r, Color.BLACK);
+        this(x, y, r, Color.BLACK, Color.WHITE);
     }
 
-    public Circulo(int x, int y, int r, Color cor) {
-        super(cor);
+    public Circulo(int x, int y, int r, Color cor, Color fill) {
+        super(cor, fill);
 
         this.centro = new Ponto(x, y);
         if (r < 0) r = -r;
@@ -33,13 +33,18 @@ public class Circulo extends Figura {
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.centro = new Ponto(x, y, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.centro = new Ponto(x, y, cor, fill);
         this.raio = r;
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void setCentro(int x, int y) {
-        this.centro = new Ponto(x, y, this.getCor());
+        this.centro = new Ponto(x, y, this.getCor(), this.getFill());
     }
 
     public void setRaio(int r) {
@@ -57,7 +62,8 @@ public class Circulo extends Figura {
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
-
+        g.setColor(this.fill);
+        g.fillOval(this.centro.getX() - raio, this.centro.getY() - raio, 2 * raio, 2 * raio);
     }
 
     public String toString() {
@@ -67,6 +73,12 @@ public class Circulo extends Figura {
                 this.centro.getY() +
                 ":" +
                 this.raio +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

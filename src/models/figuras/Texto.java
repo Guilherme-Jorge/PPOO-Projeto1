@@ -6,17 +6,20 @@ import java.util.StringTokenizer;
 public class Texto extends Figura {
     protected Ponto p;
     protected String texto;
+    protected Font fonte;
 
-    public Texto(int x, int y, String texto) {
-        this(x, y, texto, Color.BLACK);
+    public Texto(int x, int y, String texto, Font fonte) {
+        this(x, y, texto, fonte, Color.BLACK, Color.WHITE);
     }
 
-    public Texto(int x, int y, String texto, Color cor) {
-        super(cor);
+    public Texto(int x, int y, String texto, Font fonte, Color cor, Color fill) {
+        super(cor, fill);
 
         this.p = new Ponto(x, y);
 
         this.texto = texto;
+
+        this.fonte = fonte;
     }
 
     public Texto(String s) {
@@ -29,13 +32,24 @@ public class Texto extends Figura {
 
         String texto = String.valueOf(quebrador.nextToken());
 
+        Font fonte = new Font(String.valueOf(quebrador.nextToken()), // Família fonte
+                Integer.parseInt(quebrador.nextToken()),  // Estilo
+                Integer.parseInt(quebrador.nextToken())); // Tamanho
+
+
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.p = new Ponto(x, y, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.p = new Ponto(x, y, cor, fill);
         this.texto = texto;
+        this.fonte = fonte;
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void torneSeVisivel(Graphics g) {
@@ -51,6 +65,18 @@ public class Texto extends Figura {
                 this.p.getY() +
                 ":" +
                 this.texto +
+                ":" +
+                this.fonte.getFamily() +
+                ":" +
+                this.fonte.getStyle() +
+                ":" +
+                this.fonte.getSize() +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

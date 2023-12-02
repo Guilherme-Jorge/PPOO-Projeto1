@@ -9,11 +9,11 @@ public class Elipse extends Figura {
     protected int raio1, raio2;
 
     public Elipse(int x, int y, int r1, int r2) {
-        this(x, y, r1, r2, Color.BLACK);
+        this(x, y, r1, r2, Color.BLACK, Color.WHITE);
     }
 
-    public Elipse(int x, int y, int r1, int r2, Color cor) {
-        super(cor);
+    public Elipse(int x, int y, int r1, int r2, Color cor, Color fill) {
+        super(cor, fill);
 
         this.centro = new Ponto(x, y);
 
@@ -38,14 +38,19 @@ public class Elipse extends Figura {
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.centro = new Ponto(x, y, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.centro = new Ponto(x, y, cor, fill);
         this.raio1 = r1;
         this.raio2 = r2;
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void setCentro(int x, int y) {
-        this.centro = new Ponto(x, y, this.getCor());
+        this.centro = new Ponto(x, y, this.getCor(), this.getFill());
     }
 
     public void setRaio1(int r1) {
@@ -71,6 +76,8 @@ public class Elipse extends Figura {
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
         g.drawOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
+        g.setColor(this.fill);
+        g.fillOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
     }
 
     public String toString() {
@@ -82,6 +89,12 @@ public class Elipse extends Figura {
                 this.raio1 +
                 ":" +
                 this.raio2 +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

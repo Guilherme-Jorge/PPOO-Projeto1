@@ -8,11 +8,11 @@ public class Quadrado extends Figura {
     protected int lado, quadrante;
 
     public Quadrado(int x, int y, int lado, int quadrante) {
-        this(x, y, lado, quadrante, Color.BLACK);
+        this(x, y, lado, quadrante, Color.BLACK, Color.WHITE);
     }
 
-    public Quadrado(int x, int y, int lado, int quadrante, Color cor) {
-        super(cor);
+    public Quadrado(int x, int y, int lado, int quadrante, Color cor, Color fill) {
+        super(cor, fill);
 
         this.p = new Ponto(x, y);
 
@@ -35,10 +35,15 @@ public class Quadrado extends Figura {
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.p = new Ponto(x, y, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.p = new Ponto(x, y, cor, fill);
         this.lado = lado;
         this.quadrante = quadrante;
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void torneSeVisivel(Graphics g) {
@@ -57,6 +62,22 @@ public class Quadrado extends Figura {
                 g.drawRect(this.p.getX(), this.p.getY(), lado, -lado);
                 break;
         }
+
+        g.setColor(this.fill);
+        switch (quadrante) {
+            case 1:
+                g.fillRect(this.p.getX(), this.p.getY(), lado, lado);
+                break;
+            case 2:
+                g.fillRect(this.p.getX(), this.p.getY(), -lado, lado);
+                break;
+            case 3:
+                g.fillRect(this.p.getX(), this.p.getY(), -lado, -lado);
+                break;
+            case 4:
+                g.fillRect(this.p.getX(), this.p.getY(), lado, -lado);
+                break;
+        }
     }
 
     public String toString() {
@@ -68,6 +89,12 @@ public class Quadrado extends Figura {
                 this.lado +
                 ":" +
                 this.quadrante +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +

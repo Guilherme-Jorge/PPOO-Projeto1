@@ -7,14 +7,14 @@ public class Linha extends Figura {
     protected Ponto p1, p2;
 
     public Linha(int x1, int y1, int x2, int y2) {
-        this(x1, y1, x2, y2, Color.BLACK);
+        this(x1, y1, x2, y2, Color.BLACK, Color.WHITE);
     }
 
-    public Linha(int x1, int y1, int x2, int y2, Color cor) {
-        super(cor);
+    public Linha(int x1, int y1, int x2, int y2, Color cor, Color fill) {
+        super(cor, fill);
 
-        this.p1 = new Ponto(x1, y1, cor);
-        this.p2 = new Ponto(x2, y2, cor);
+        this.p1 = new Ponto(x1, y1, cor, fill);
+        this.p2 = new Ponto(x2, y2, cor, fill);
     }
 
     public Linha(String s) {
@@ -32,17 +32,22 @@ public class Linha extends Figura {
                 Integer.parseInt(quebrador.nextToken()),  // G
                 Integer.parseInt(quebrador.nextToken())); // B
 
-        this.p1 = new Ponto(x1, y1, cor);
-        this.p2 = new Ponto(x2, y2, cor);
+        Color fill = new Color(Integer.parseInt(quebrador.nextToken()),  // R
+                Integer.parseInt(quebrador.nextToken()),  // G
+                Integer.parseInt(quebrador.nextToken())); // B
+
+        this.p1 = new Ponto(x1, y1, cor, fill);
+        this.p2 = new Ponto(x2, y2, cor, fill);
         this.cor = cor;
+        this.fill = fill;
     }
 
     public void setP1(int x, int y) {
-        this.p1 = new Ponto(x, y, this.getCor());
+        this.p1 = new Ponto(x, y, this.getCor(), this.getFill());
     }
 
     public void setP2(int x, int y) {
-        this.p2 = new Ponto(x, y, this.getCor());
+        this.p2 = new Ponto(x, y, this.getCor(), this.getFill());
     }
 
     public Ponto getP1() {
@@ -68,6 +73,12 @@ public class Linha extends Figura {
                 this.p2.getX() +
                 ":" +
                 this.p2.getY() +
+                ":" +
+                this.getCor().getRed() +
+                ":" +
+                this.getCor().getGreen() +
+                ":" +
+                this.getCor().getBlue() +
                 ":" +
                 this.getCor().getRed() +
                 ":" +
