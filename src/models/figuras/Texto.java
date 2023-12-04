@@ -54,8 +54,64 @@ public class Texto extends Figura {
 
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
-        g.setFont(new Font("Arial", Font.PLAIN, 12));
+        g.setFont(this.fonte);
         g.drawString(this.texto, this.p.getX(), this.p.getY());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Texto t = (Texto) obj;
+
+        if (!t.fonte.equals(this.fonte)) return false;
+        if (!t.p.equals(this.p)) return false;
+        if (!t.texto.equals(this.texto)) return false;
+
+        if (t.cor.equals(this.cor)) return false;
+        if (t.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + this.fonte.hashCode();
+        ret = 7*ret + this.p.hashCode();
+        ret = 7*ret + this.texto.hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Texto(Texto t) throws Exception {
+        if (t == null) throw new Exception("Modelo nulo");
+
+        this.fonte = t.fonte;
+        this.p = (Ponto) t.p.clone();
+        this.texto = t.texto;
+
+        this.cor = t.cor;
+        this.fill = t.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Texto ret = null;
+
+        try {
+            ret = new Texto(this);
+        } catch (Exception e) {}
+
+        return ret;
     }
 
     public String toString() {

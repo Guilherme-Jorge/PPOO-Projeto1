@@ -64,6 +64,59 @@ public class Linha extends Figura {
                 this.p2.getX(), this.p2.getY());  // ponto final
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Linha l = (Linha) obj;
+
+        if (!l.p1.equals(this.p1)) return false;
+        if (!l.p2.equals(this.p2)) return false;
+
+        if (l.cor.equals(this.cor)) return false;
+        if (l.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + this.p1.hashCode();
+        ret = 7*ret + this.p2.hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Linha(Linha l) throws Exception {
+        if (l == null) throw new Exception("Modelo nulo");
+
+        this.p1 = (Ponto) l.p1.clone();
+        this.p2 = (Ponto) l.p2.clone();
+
+        this.cor = l.cor;
+        this.fill = l.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Linha ret = null;
+
+        try {
+            ret = new Linha(this);
+        } catch (Exception e) {}
+
+        return ret;
+    }
+
     public String toString() {
         return "l:" +
                 this.p1.getX() +

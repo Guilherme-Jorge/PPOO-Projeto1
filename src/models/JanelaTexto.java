@@ -1,5 +1,7 @@
 package models;
 
+import models.figuras.Texto;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,9 +22,10 @@ public class JanelaTexto extends JFrame implements ActionListener {
     private int selectedStyle = 0;
     private int selectedSize = 20;
     protected Font selectedFont;
-    protected boolean concluido = false;
+    protected Janela.MeuJPanel pai;
+    protected int x, y;
 
-    public JanelaTexto() {
+    public JanelaTexto(Janela.MeuJPanel pai, int x, int y) {
         this.setTitle("Digite o texto:");
         this.setSize(600, 600);
         this.setLayout(new FlowLayout());
@@ -54,7 +57,17 @@ public class JanelaTexto extends JFrame implements ActionListener {
         fontStyleSpinner.setValue(0);
         fontStyleSpinner.addChangeListener((e) -> {
             selectedStyle = (int) fontSizeSpinner.getValue();
-            textArea.setFont(new Font(selectedFontFamily, selectedStyle, selectedSize));
+            switch (selectedStyle) {
+                case 0:
+                    textArea.setFont(new Font(selectedFontFamily, Font.PLAIN, selectedSize));
+                    break;
+                case 1:
+                    textArea.setFont(new Font(selectedFontFamily, Font.BOLD, selectedSize));
+                    break;
+                case 2:
+                    textArea.setFont(new Font(selectedFontFamily, Font.ITALIC, selectedSize));
+                    break;
+            }
         });
 
         fontBox = new JComboBox<>(fonts);
@@ -63,7 +76,19 @@ public class JanelaTexto extends JFrame implements ActionListener {
 
         concluir = new JButton("Concluir");
         concluir.addActionListener((e) -> {
-            concluido = true;
+            Font f = new Font(selectedFontFamily, Font.PLAIN, selectedSize);
+            switch (selectedStyle) {
+                case 0:
+                    f = new Font(selectedFontFamily, Font.PLAIN, selectedSize);
+                    break;
+                case 1:
+                    f = new Font(selectedFontFamily, Font.BOLD, selectedSize);
+                    break;
+                case 2:
+                    f = new Font(selectedFontFamily, Font.ITALIC, selectedSize);
+                    break;
+            }
+            this.pai.addTexto(this.x, this.y, this.textArea.getText(), f);
             this.dispose();
         });
 
@@ -75,6 +100,10 @@ public class JanelaTexto extends JFrame implements ActionListener {
         this.add(concluir);
         this.add(scrollPane);
         this.setVisible(true);
+
+        this.pai = pai;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
@@ -85,17 +114,5 @@ public class JanelaTexto extends JFrame implements ActionListener {
             selectedSize = (int) fontSizeSpinner.getValue();
             textArea.setFont(new Font(selectedFontFamily, selectedStyle, selectedSize));
         }
-    }
-
-    public Font getSelectedFont() {
-        return selectedFont = new Font(selectedFontFamily, selectedStyle, selectedSize);
-    }
-
-    public String getText() {
-        return textArea.getText();
-    }
-
-    public boolean isConcluido() {
-        return concluido;
     }
 }

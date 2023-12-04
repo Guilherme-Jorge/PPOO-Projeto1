@@ -80,6 +80,62 @@ public class Elipse extends Figura {
         g.fillOval(this.centro.getX() - raio1, this.centro.getY() - raio2, 2 * raio1, 2 * raio2);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Elipse e = (Elipse) obj;
+
+        if (e.centro != this.centro) return false;
+        if (e.raio1 != this.raio1) return false;
+        if (e.raio2 != this.raio2) return false;
+
+        if (e.cor.equals(this.cor)) return false;
+        if (e.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + Integer.valueOf(this.raio1).hashCode();
+        ret = 7*ret + Integer.valueOf(this.raio2).hashCode();
+        ret = 7*ret + this.centro.hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Elipse(Elipse e) throws Exception {
+        if (e == null) throw new Exception("Modelo nulo");
+
+        this.raio1 = e.raio1;
+        this.raio2 = e.raio2;
+        this.centro = (Ponto) e.centro.clone();
+
+        this.cor = e.cor;
+        this.fill = e.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Elipse ret = null;
+
+        try {
+            ret = new Elipse(this);
+        } catch (Exception e) {}
+
+        return ret;
+    }
+
     public String toString() {
         return "e:" +
                 this.centro.getX() +

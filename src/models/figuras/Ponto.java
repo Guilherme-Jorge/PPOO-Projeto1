@@ -57,6 +57,59 @@ public class Ponto extends Figura {
         g.drawLine(this.x, this.y, this.x, this.y);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Ponto p = (Ponto) obj;
+
+        if (p.x != this.x) return false;
+        if (p.y != this.y) return false;
+
+        if (p.cor.equals(this.cor)) return false;
+        if (p.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + Integer.valueOf(this.x).hashCode();
+        ret = 7*ret + Integer.valueOf(this.y).hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Ponto(Ponto p) throws Exception {
+        if (p == null) throw new Exception("Modelo nulo");
+
+        this.x = p.x;
+        this.y = p.y;
+
+        this.cor = p.cor;
+        this.fill = p.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Ponto ret = null;
+
+        try {
+            ret = new Ponto(this);
+        } catch (Exception e) {}
+
+        return ret;
+    }
+
     public String toString() {
         return "p:" +
                 this.x +

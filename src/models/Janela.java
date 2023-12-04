@@ -333,11 +333,7 @@ public class Janela extends JFrame {
                 statusBar1.setText("Mensagem:");
             } else if (esperaTexto) {
                 esperaTexto = false;
-                JanelaTexto janelaTexto = new JanelaTexto();
-                while (!janelaTexto.isConcluido()) {
-                }
-                figuras.add(new Texto(e.getX(), e.getY(), janelaTexto.getText(), janelaTexto.getSelectedFont(), corAtual, corFill));
-                figuras.get(figuras.size() -1).torneSeVisivel(pnlDesenho.getGraphics());
+                JanelaTexto janelaTexto = new JanelaTexto(this, e.getX(), e.getY());
                 statusBar1.setText("Mensagem:");
 
             }
@@ -394,6 +390,11 @@ public class Janela extends JFrame {
                     new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 4, corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
                 pnlDesenho.paint(pnlDesenho.getGraphics());
             }
+        }
+
+        public void addTexto(int x, int y, String texto, Font fonte) {
+            figuras.add(new Texto(x, y, texto, fonte, corAtual, corFill));
+            figuras.get(figuras.size() -1).torneSeVisivel(pnlDesenho.getGraphics());
         }
     }
 

@@ -80,6 +80,62 @@ public class Quadrado extends Figura {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Quadrado q = (Quadrado) obj;
+
+        if (q.lado != this.lado) return false;
+        if (!q.p.equals(this.p)) return false;
+        if (q.quadrante != this.quadrante) return false;
+
+        if (q.cor.equals(this.cor)) return false;
+        if (q.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + Integer.valueOf(this.lado).hashCode();
+        ret = 7*ret + this.p.hashCode();
+        ret = 7*ret + Integer.valueOf(this.quadrante).hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Quadrado(Quadrado q) throws Exception {
+        if (q == null) throw new Exception("Modelo nulo");
+
+        this.lado = q.lado;
+        this.p = (Ponto) q.p.clone();
+        this.quadrante = q.quadrante;
+
+        this.cor = q.cor;
+        this.fill = q.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Quadrado ret = null;
+
+        try {
+            ret = new Quadrado(this);
+        } catch (Exception e) {}
+
+        return ret;
+    }
+
     public String toString() {
         return "q:" +
                 this.p.getX() +

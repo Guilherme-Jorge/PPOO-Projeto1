@@ -53,6 +53,62 @@ public class Retangulo extends Figura {
         g.fillRect(this.p.getX(), this.p.getY(), comprimento, altura);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (obj.getClass() != this.getClass()) return false;
+
+        Retangulo r = (Retangulo) obj;
+
+        if (!r.p.equals(this.p)) return false;
+        if (r.altura != this.altura) return false;
+        if (r.comprimento != this.comprimento) return false;
+
+        if (r.cor.equals(this.cor)) return false;
+        if (r.fill.equals(this.fill)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 1;
+
+        ret = 7*ret + this.p.hashCode();
+        ret = 7*ret + Integer.valueOf(this.altura).hashCode();
+        ret = 7*ret + Integer.valueOf(this.comprimento).hashCode();
+
+        ret = 7*ret + this.cor.hashCode();
+        ret = 7*ret + this.fill.hashCode();
+
+        if (ret < 0) ret = -ret;
+
+        return ret;
+    }
+
+    private Retangulo(Retangulo r) throws Exception {
+        if (r == null) throw new Exception("Modelo nulo");
+
+        this.p = (Ponto) r.p.clone();
+        this.altura = r.altura;
+        this.comprimento = r.comprimento;
+
+        this.cor = r.cor;
+        this.fill = r.fill;
+    }
+
+    @Override
+    public Object clone() {
+        Retangulo ret = null;
+
+        try {
+            ret = new Retangulo(this);
+        } catch (Exception e) {}
+
+        return ret;
+    }
+
     public String toString() {
         return "r:" +
                 this.p.getX() +
