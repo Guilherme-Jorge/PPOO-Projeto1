@@ -14,7 +14,9 @@ import java.util.concurrent.TimeUnit;
 public class Janela extends JFrame {
     protected static final long serialVersionUID = 1L;
 
-    protected JButton btnPonto = new JButton("Ponto"),
+    protected JButton btnAbrir = new JButton("Abrir"),
+            btnSalvar = new JButton("Salvar"),
+            btnPonto = new JButton("Ponto"),
             btnLinha = new JButton("Linha"),
             btnQuadrado = new JButton("Quadrado"),
             btnRetangulo = new JButton("Retangulo"),
@@ -23,8 +25,6 @@ public class Janela extends JFrame {
             btnTexto = new JButton("Texto"),
             btnCores1 = new JButton("Cor Principal"),
             btnCores2 = new JButton("Cor Secundária"),
-            btnAbrir = new JButton("Abrir"),
-            btnSalvar = new JButton("Salvar"),
             btnApagar = new JButton("Apagar"),
             btnSair = new JButton("Sair");
 
@@ -33,24 +33,22 @@ public class Janela extends JFrame {
     protected JLabel statusBar1 = new JLabel("Mensagem:"),
             statusBar2 = new JLabel("Coordenada:");
 
-    protected boolean esperaPonto,
+    protected boolean esperaPonto = false,
             esperaInicioLinha = false,
             esperaFimLinha = false,
+            esperaInicioQuadrado = false,
+            esperaFimQuadrado = false,
+            esperaInicioRetangulo = false,
+            esperaFimRetangulo = false,
             esperaInicioCirculo = false,
             esperaFimCirculo = false,
             esperaInicioElipse = false,
-            esperaMeioElipse = false,
             esperaFimElipse = false,
-            esperaInicioRetangulo = false,
-            esperaFimRetangulo = false,
-            esperaInicioQuadrado = false,
-            esperaFimQuadrado = false,
             esperaTexto = false;
 
     protected Color corAtual = Color.BLACK;
     protected Color corFill = new Color(238, 238, 238);
     protected Ponto p1;
-    protected Ponto p2;
 
     protected Vector<Figura> figuras = new Vector<>();
 
@@ -59,6 +57,8 @@ public class Janela extends JFrame {
 
         carregarBotoesImg();
 
+        btnAbrir.addActionListener(new AbrirArquivo());
+        btnSalvar.addActionListener(new SalvarArquivo());
         btnPonto.addActionListener(new DesenhoDePonto());
         btnLinha.addActionListener(new DesenhoDeLinha());
         btnQuadrado.addActionListener(new DesenhoDeQuadrado());
@@ -68,8 +68,6 @@ public class Janela extends JFrame {
         btnTexto.addActionListener(new AdicionarTexto());
         btnCores1.addActionListener(new EscolherCor1());
         btnCores2.addActionListener(new EscolherCor2());
-        btnAbrir.addActionListener(new AbrirArquivo());
-        btnSalvar.addActionListener(new SalvarArquivo());
         btnApagar.addActionListener(new ApagarPainel());
         btnSair.addActionListener(new SairPrograma());
 
@@ -112,6 +110,26 @@ public class Janela extends JFrame {
     }
 
     private void carregarBotoesImg() {
+        try {
+            Image btnAbrirImg = ImageIO.read(getClass().getResource("../resources/icons/abrir.jpg"));
+            btnAbrir.setIcon(new ImageIcon(btnAbrirImg));
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Arquivo abrir.jpg não foi encontrado",
+                    "Arquivo de imagem ausente",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+        try {
+            Image btnSalvarImg = ImageIO.read(getClass().getResource("../resources/icons/salvar.jpg"));
+            btnSalvar.setIcon(new ImageIcon(btnSalvarImg));
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Arquivo salvar.jpg não foi encontrado",
+                    "Arquivo de imagem ausente",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
         try {
             Image btnPontoImg = ImageIO.read(getClass().getResource("../resources/icons/ponto.jpg"));
             btnPonto.setIcon(new ImageIcon(btnPontoImg));
@@ -185,39 +203,10 @@ public class Janela extends JFrame {
         try {
             Image btnCoresImg = ImageIO.read(getClass().getResource("../resources/icons/cores.jpg"));
             btnCores1.setIcon(new ImageIcon(btnCoresImg));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Arquivo cores.jpg não foi encontrado",
-                    "Arquivo de imagem ausente",
-                    JOptionPane.WARNING_MESSAGE);
-        }
-
-        try {
-            Image btnCoresImg = ImageIO.read(getClass().getResource("../resources/icons/cores.jpg"));
             btnCores2.setIcon(new ImageIcon(btnCoresImg));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,
                     "Arquivo cores.jpg não foi encontrado",
-                    "Arquivo de imagem ausente",
-                    JOptionPane.WARNING_MESSAGE);
-        }
-
-        try {
-            Image btnAbrirImg = ImageIO.read(getClass().getResource("../resources/icons/abrir.jpg"));
-            btnAbrir.setIcon(new ImageIcon(btnAbrirImg));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Arquivo abrir.jpg não foi encontrado",
-                    "Arquivo de imagem ausente",
-                    JOptionPane.WARNING_MESSAGE);
-        }
-
-        try {
-            Image btnSalvarImg = ImageIO.read(getClass().getResource("../resources/icons/salvar.jpg"));
-            btnSalvar.setIcon(new ImageIcon(btnSalvarImg));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Arquivo salvar.jpg não foi encontrado",
                     "Arquivo de imagem ausente",
                     JOptionPane.WARNING_MESSAGE);
         }
@@ -279,6 +268,29 @@ public class Janela extends JFrame {
                 figuras.add(new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual, corFill));
                 figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
                 statusBar1.setText("Mensagem:");
+            } else if (esperaInicioQuadrado) {
+                p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
+                esperaInicioQuadrado = false;
+                esperaFimQuadrado = true;
+                statusBar1.setText("Mensagem: clique o ponto final do quadrado");
+            } else if (esperaFimQuadrado) {
+                esperaFimQuadrado = false;
+                if (e.getX() - p1.getX() > e.getY() - p1.getY())
+                    figuras.add(new Quadrado(p1.getX(), p1.getY(), e.getX() - p1.getX(), corAtual, corFill));
+                else
+                    figuras.add(new Quadrado(p1.getX(), p1.getY(), e.getY() - p1.getY(), corAtual, corFill));
+                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
+                statusBar1.setText("Mensagem:");
+            } else if (esperaInicioRetangulo) {
+                p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
+                esperaInicioRetangulo = false;
+                esperaFimRetangulo = true;
+                statusBar1.setText("Mensagem: clique o ponto final do retângulo");
+            } else if (esperaFimRetangulo) {
+                esperaFimRetangulo = false;
+                figuras.add(new Retangulo(p1.getX(), p1.getY(), e.getX() - p1.getX(), e.getY() - p1.getY(), corAtual, corFill));
+                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
+                statusBar1.setText("Mensagem:");
             } else if (esperaInicioCirculo) {
                 p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
                 esperaInicioCirculo = false;
@@ -292,48 +304,16 @@ public class Janela extends JFrame {
             } else if (esperaInicioElipse) {
                 p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
                 esperaInicioElipse = false;
-                esperaMeioElipse = true;
-                statusBar1.setText("Mensagem: clique o primeiro raio da elipse");
-            } else if (esperaMeioElipse) {
-                p2 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
-                esperaMeioElipse = false;
                 esperaFimElipse = true;
-                statusBar1.setText("Mensagem: clique o segundo raio da elipse");
+                statusBar1.setText("Mensagem: clique o primeiro raio da elipse");
             } else if (esperaFimElipse) {
                 esperaFimElipse = false;
-                figuras.add(new Elipse(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), p2.getX(), p2.getY()), e.getY() - p1.getY(), corAtual, corFill));
-                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
-                statusBar1.setText("Mensagem:");
-            } else if (esperaInicioRetangulo) {
-                p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
-                esperaInicioRetangulo = false;
-                esperaFimRetangulo = true;
-                statusBar1.setText("Mensagem: clique o ponto final do retângulo");
-            } else if (esperaFimRetangulo) {
-                esperaFimRetangulo = false;
-                figuras.add(new Retangulo(p1.getX(), p1.getY(), e.getX() - p1.getX(), e.getY() - p1.getY(), corAtual, corFill));
-                figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
-                statusBar1.setText("Mensagem:");
-            } else if (esperaInicioQuadrado) {
-                p1 = new Ponto(e.getX(), e.getY(), corAtual, corFill);
-                esperaInicioQuadrado = false;
-                esperaFimQuadrado = true;
-                statusBar1.setText("Mensagem: clique o ponto final do quadrado");
-            } else if (esperaFimQuadrado) {
-                esperaFimQuadrado = false;
-                if (e.getX() > p1.getX() && e.getY() > p1.getY())
-                    figuras.add(new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 1, corAtual, corFill));
-                if (p1.getX() > e.getX() && e.getY() > p1.getY())
-                    figuras.add(new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 2, corAtual, corFill));
-                if (p1.getX() > e.getX() && p1.getY() > e.getY())
-                    figuras.add(new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 3, corAtual, corFill));
-                if (e.getX() > p1.getX() && p1.getY() > e.getY())
-                    figuras.add(new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 4, corAtual, corFill));
+                figuras.add(new Elipse(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), e.getY() - p1.getY(), corAtual, corFill));
                 figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
                 statusBar1.setText("Mensagem:");
             } else if (esperaTexto) {
                 esperaTexto = false;
-                JanelaTexto janelaTexto = new JanelaTexto(this, e.getX(), e.getY());
+                new JanelaTexto(this, e.getX(), e.getY());
                 statusBar1.setText("Mensagem:");
 
             }
@@ -366,112 +346,31 @@ public class Janela extends JFrame {
                 pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
                 new Linha(p1.getX(), p1.getY(), e.getX(), e.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
                 pnlDesenho.paint(pnlDesenho.getGraphics());
+            } else if (esperaFimQuadrado) {
+                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
+                if (e.getX() - p1.getX() > e.getY() - p1.getY())
+                    new Quadrado(p1.getX(), p1.getY(), e.getX() - p1.getX(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
+                else
+                    new Quadrado(p1.getX(), p1.getY(), e.getY() - p1.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
+                pnlDesenho.paint(pnlDesenho.getGraphics());
+            } else if (esperaFimRetangulo) {
+                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
+                new Retangulo(p1.getX(), p1.getY(), e.getX() - p1.getX(), e.getY() - p1.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
+                pnlDesenho.paint(pnlDesenho.getGraphics());
             } else if (esperaFimCirculo) {
                 pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
                 new Circulo(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
                 pnlDesenho.paint(pnlDesenho.getGraphics());
             } else if (esperaFimElipse) {
                 pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
-                new Elipse(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), p2.getX(), p2.getY()), e.getY() - p1.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
-                pnlDesenho.paint(pnlDesenho.getGraphics());
-            } else if (esperaFimRetangulo) {
-                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
-                new Retangulo(p1.getX(), p1.getY(), e.getX() - p1.getX(), e.getY() - p1.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
-                pnlDesenho.paint(pnlDesenho.getGraphics());
-            } else if (esperaFimQuadrado) {
-                pnlDesenho.getGraphics().clearRect(0, 0, pnlDesenho.getWidth(), pnlDesenho.getHeight());
-                if (e.getX() > p1.getX() && e.getY() > p1.getY())
-                    new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 1, corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
-                if (p1.getX() > e.getX() && e.getY() > p1.getY())
-                    new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 2, corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
-                if (p1.getX() > e.getX() && p1.getY() > e.getY())
-                    new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 3, corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
-                if (e.getX() > p1.getX() && p1.getY() > e.getY())
-                    new Quadrado(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), 4, corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
+                new Elipse(p1.getX(), p1.getY(), calcularRaio(p1.getX(), p1.getY(), e.getX(), e.getY()), e.getY() - p1.getY(), corAtual, corFill).torneSeVisivel(pnlDesenho.getGraphics());
                 pnlDesenho.paint(pnlDesenho.getGraphics());
             }
         }
 
         public void addTexto(int x, int y, String texto, Font fonte) {
             figuras.add(new Texto(x, y, texto, fonte, corAtual, corFill));
-            figuras.get(figuras.size() -1).torneSeVisivel(pnlDesenho.getGraphics());
-        }
-    }
-
-    protected class DesenhoDePonto implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaPonto = true;
-
-            statusBar1.setText("Mensagem: clique o local do ponto desejado");
-        }
-    }
-
-    protected class DesenhoDeLinha implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaInicioLinha = true;
-
-            statusBar1.setText("Mensagem: clique o ponto inicial da linha");
-        }
-    }
-
-    protected class DesenhoDeQuadrado implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaInicioQuadrado = true;
-
-            statusBar1.setText("Mensagem: clique o ponto inicial do quadrado");
-        }
-    }
-
-    protected class DesenhoDeRetangulo implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaInicioRetangulo = true;
-
-            statusBar1.setText("Mensagem: clique o ponto inicial do retângulo");
-        }
-    }
-
-    protected class DesenhoDeElipse implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaInicioElipse = true;
-
-            statusBar1.setText("Mensagem: clique o centro da elipse");
-        }
-    }
-
-    protected class DesenhoDeCirculo implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaInicioCirculo = true;
-
-            statusBar1.setText("Mensagem: clique o centro do círculo");
-        }
-    }
-
-    protected class AdicionarTexto implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            esperaTexto = true;
-
-            statusBar1.setText("Mensagem: clique o local do texto desejado");
-        }
-    }
-
-    protected class EscolherCor1 implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            corAtual = JColorChooser.showDialog(pnlDesenho, "Escolha uma cor:", Color.BLACK);
-        }
-    }
-
-    protected class EscolherCor2 implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            corFill = JColorChooser.showDialog(pnlDesenho, "Escolha uma cor:", Color.WHITE);
+            figuras.get(figuras.size() - 1).torneSeVisivel(pnlDesenho.getGraphics());
         }
     }
 
@@ -551,6 +450,83 @@ public class Janela extends JFrame {
                     throw new RuntimeException(ex);
                 }
             }
+        }
+    }
+
+    protected class DesenhoDePonto implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaPonto = true;
+
+            statusBar1.setText("Mensagem: clique o local do ponto desejado");
+        }
+    }
+
+    protected class DesenhoDeLinha implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaInicioLinha = true;
+
+            statusBar1.setText("Mensagem: clique o ponto inicial da linha");
+        }
+    }
+
+    protected class DesenhoDeQuadrado implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaInicioQuadrado = true;
+
+            statusBar1.setText("Mensagem: clique o ponto inicial do quadrado");
+        }
+    }
+
+    protected class DesenhoDeRetangulo implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaInicioRetangulo = true;
+
+            statusBar1.setText("Mensagem: clique o ponto inicial do retângulo");
+        }
+    }
+
+    protected class DesenhoDeCirculo implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaInicioCirculo = true;
+
+            statusBar1.setText("Mensagem: clique o centro do círculo");
+        }
+    }
+
+    protected class DesenhoDeElipse implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaInicioElipse = true;
+
+            statusBar1.setText("Mensagem: clique o centro da elipse");
+        }
+    }
+
+    protected class AdicionarTexto implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            esperaTexto = true;
+
+            statusBar1.setText("Mensagem: clique o local do texto desejado");
+        }
+    }
+
+    protected class EscolherCor1 implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            corAtual = JColorChooser.showDialog(pnlDesenho, "Escolha uma cor:", Color.BLACK);
+        }
+    }
+
+    protected class EscolherCor2 implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            corFill = JColorChooser.showDialog(pnlDesenho, "Escolha uma cor:", Color.WHITE);
         }
     }
 

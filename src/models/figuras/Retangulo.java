@@ -28,8 +28,8 @@ public class Retangulo extends Figura {
         int x = Integer.parseInt(quebrador.nextToken());
         int y = Integer.parseInt(quebrador.nextToken());
 
-        int altura = Integer.parseInt(quebrador.nextToken());
         int comprimento = Integer.parseInt(quebrador.nextToken());
+        int altura = Integer.parseInt(quebrador.nextToken());
 
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
@@ -125,10 +125,10 @@ public class Retangulo extends Figura {
                 ":" +
                 this.getCor().getBlue() +
                 ":" +
-                this.getCor().getRed() +
+                this.getFill().getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.getFill().getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.getFill().getBlue();
     }
 }

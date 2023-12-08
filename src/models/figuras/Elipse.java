@@ -152,10 +152,10 @@ public class Elipse extends Figura {
                 ":" +
                 this.getCor().getBlue() +
                 ":" +
-                this.getCor().getRed() +
+                this.getFill().getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.getFill().getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.getFill().getBlue();
     }
 }

@@ -5,19 +5,18 @@ import java.util.StringTokenizer;
 
 public class Quadrado extends Figura {
     protected Ponto p;
-    protected int lado, quadrante;
+    protected int lado;
 
-    public Quadrado(int x, int y, int lado, int quadrante) {
-        this(x, y, lado, quadrante, Color.BLACK, Color.WHITE);
+    public Quadrado(int x, int y, int lado) {
+        this(x, y, lado, Color.BLACK, Color.WHITE);
     }
 
-    public Quadrado(int x, int y, int lado, int quadrante, Color cor, Color fill) {
+    public Quadrado(int x, int y, int lado, Color cor, Color fill) {
         super(cor, fill);
 
         this.p = new Ponto(x, y);
 
         this.lado = lado;
-        this.quadrante = quadrante;
     }
 
     public Quadrado(String s) {
@@ -29,7 +28,6 @@ public class Quadrado extends Figura {
         int y = Integer.parseInt(quebrador.nextToken());
 
         int lado = Integer.parseInt(quebrador.nextToken());
-        int quadrante = Integer.parseInt(quebrador.nextToken());
 
         Color cor = new Color(Integer.parseInt(quebrador.nextToken()),  // R
                 Integer.parseInt(quebrador.nextToken()),  // G
@@ -41,43 +39,15 @@ public class Quadrado extends Figura {
 
         this.p = new Ponto(x, y, cor, fill);
         this.lado = lado;
-        this.quadrante = quadrante;
         this.cor = cor;
         this.fill = fill;
     }
 
     public void torneSeVisivel(Graphics g) {
         g.setColor(this.cor);
-        switch (quadrante) {
-            case 1:
-                g.drawRect(this.p.getX(), this.p.getY(), lado, lado);
-                break;
-            case 2:
-                g.drawRect(this.p.getX(), this.p.getY(), -lado, lado);
-                break;
-            case 3:
-                g.drawRect(this.p.getX(), this.p.getY(), -lado, -lado);
-                break;
-            case 4:
-                g.drawRect(this.p.getX(), this.p.getY(), lado, -lado);
-                break;
-        }
-
+        g.drawRect(this.p.getX(), this.p.getY(), lado, lado);
         g.setColor(this.fill);
-        switch (quadrante) {
-            case 1:
-                g.fillRect(this.p.getX(), this.p.getY(), lado, lado);
-                break;
-            case 2:
-                g.fillRect(this.p.getX(), this.p.getY(), -lado, lado);
-                break;
-            case 3:
-                g.fillRect(this.p.getX(), this.p.getY(), -lado, -lado);
-                break;
-            case 4:
-                g.fillRect(this.p.getX(), this.p.getY(), lado, -lado);
-                break;
-        }
+        g.fillRect(this.p.getX(), this.p.getY(), lado, lado);
     }
 
     @Override
@@ -90,7 +60,6 @@ public class Quadrado extends Figura {
 
         if (q.lado != this.lado) return false;
         if (!q.p.equals(this.p)) return false;
-        if (q.quadrante != this.quadrante) return false;
 
         if (q.cor.equals(this.cor)) return false;
         if (q.fill.equals(this.fill)) return false;
@@ -104,7 +73,6 @@ public class Quadrado extends Figura {
 
         ret = 7*ret + Integer.valueOf(this.lado).hashCode();
         ret = 7*ret + this.p.hashCode();
-        ret = 7*ret + Integer.valueOf(this.quadrante).hashCode();
 
         ret = 7*ret + this.cor.hashCode();
         ret = 7*ret + this.fill.hashCode();
@@ -119,7 +87,6 @@ public class Quadrado extends Figura {
 
         this.lado = q.lado;
         this.p = (Ponto) q.p.clone();
-        this.quadrante = q.quadrante;
 
         this.cor = q.cor;
         this.fill = q.fill;
@@ -144,18 +111,16 @@ public class Quadrado extends Figura {
                 ":" +
                 this.lado +
                 ":" +
-                this.quadrante +
-                ":" +
                 this.getCor().getRed() +
                 ":" +
                 this.getCor().getGreen() +
                 ":" +
                 this.getCor().getBlue() +
                 ":" +
-                this.getCor().getRed() +
+                this.getFill().getRed() +
                 ":" +
-                this.getCor().getGreen() +
+                this.getFill().getGreen() +
                 ":" +
-                this.getCor().getBlue();
+                this.getFill().getBlue();
     }
 }
